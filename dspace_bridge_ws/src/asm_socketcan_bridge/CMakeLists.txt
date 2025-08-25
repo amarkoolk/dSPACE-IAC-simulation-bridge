@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_STANDARD 99)
 
 find_package(rclcpp REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -50,6 +51,7 @@ set(
   autonoma_msgs
   vectornav_msgs
   novatel_oem7_msgs
+  ament_index_cpp
 )
 
 install(

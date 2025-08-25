@@ -1,5 +1,5 @@
-FROM ros:humble-ros-base AS dspace_ros_base
-# Adds all dspace specific dependencies to a ros humble base image.
+FROM ros:kilted-ros-base AS dspace_ros_base
+# Adds all dspace specific dependencies to a ros kilted base image.
 SHELL ["/bin/bash", "-c"]
 ENTRYPOINT ["tail", "-f", "/dev/null"]
 
@@ -7,17 +7,17 @@ ENV SIM_CLOCK_MODE=false
 ENV ENABLE_LOG=false
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends openssh-server xauth build-essential libboost-all-dev python3-colcon-common-extensions git cmake zip g++ software-properties-common gdb wget python3-pip debconf python3 python3-setuptools ros-humble-rmw-cyclonedds-cpp ros-humble-tf2
+    apt-get install -y --no-install-recommends openssh-server xauth build-essential libboost-all-dev python3-colcon-common-extensions git cmake zip g++ software-properties-common gdb wget python3-pip debconf python3 python3-setuptools ros-kilted-rmw-cyclonedds-cpp ros-kilted-tf2
 
 RUN rosdep update && \
-    echo 'source /opt/ros/humble/local_setup.bash' >> /root/.bashrc
+    echo 'source /opt/ros/kilted/local_setup.bash' >> /root/.bashrc
 
 # Build custom message definitions 
 RUN mkdir -p /root/ros_ws_aux
 COPY dSPACE-IAC-simulation-bridge/ros_ws_aux /root/ros_ws_aux
 
-RUN source /opt/ros/humble/local_setup.bash && \
-    rosdep install -i --from-path /root/ros_ws_aux/src --rosdistro humble -y && \
+RUN source /opt/ros/kilted/local_setup.bash && \
+    rosdep install -i --from-path /root/ros_ws_aux/src --rosdistro kilted -y && \
     colcon build --symlink-install --base-paths /root/ros_ws_aux --build-base /root/ros_ws_aux/build --install-base /root/ros_ws_aux/install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo && \
     echo 'source /root/ros_ws_aux/install/local_setup.bash' >> /root/.bashrc
 
@@ -41,9 +41,9 @@ ENV BRIDGE_TYPE="ASM_ROS2"
 # Build bridge node and enable autostart for headless execution
 COPY dSPACE-IAC-simulation-bridge/dspace_bridge_ws/src/asm_ros2_bridge /root/dspace_bridge_ws/src/asm_ros2_bridge
 RUN mkdir -p /root/record_log && \
-    source /opt/ros/humble/local_setup.bash && \
+    source /opt/ros/kilted/local_setup.bash && \
     source /root/ros_ws_aux/install/local_setup.bash && \
-    rosdep install -i --from-path /root/dspace_bridge_ws/src --rosdistro humble -y && \
+    rosdep install -i --from-path /root/dspace_bridge_ws/src --rosdistro kilted -y && \
     colcon build --symlink-install --cmake-clean-first --base-paths /root/dspace_bridge_ws/ --build-base /root/dspace_bridge_ws/build --install-base /root/dspace_bridge_ws/install --cmake-args -DCMAKE_BUILD_TYPE=Release && \
     echo 'source /root/dspace_bridge_ws/install/local_setup.bash' >> /root/.bashrc
 
@@ -56,9 +56,9 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends can-utils iproute2 kmod
 COPY dSPACE-IAC-simulation-bridge/dspace_bridge_ws/src/asm_socketcan_bridge /root/dspace_bridge_ws/src/asm_socketcan_bridge
 RUN mkdir -p /root/record_log && \
-    source /opt/ros/humble/local_setup.bash && \
+    source /opt/ros/kilted/local_setup.bash && \
     source /root/ros_ws_aux/install/local_setup.bash && \
-    rosdep install -i --from-path /root/dspace_bridge_ws/src --rosdistro humble -y && \
+    rosdep install -i --from-path /root/dspace_bridge_ws/src --rosdistro kilted -y && \
     colcon build --symlink-install --cmake-clean-first --base-paths /root/dspace_bridge_ws/ --build-base /root/dspace_bridge_ws/build --install-base /root/dspace_bridge_ws/install --cmake-args -DCMAKE_BUILD_TYPE=Release && \
     echo 'source /root/dspace_bridge_ws/install/local_setup.bash' >> /root/.bashrc
 
@@ -69,9 +69,9 @@ ENV BRIDGE_TYPE="AURELION_ROS2"
 # Build bridge node and enable autostart for headless execution
 COPY dSPACE-IAC-simulation-bridge/dspace_bridge_ws/src/aurelion_ros2_bridge /root/dspace_bridge_ws/src/aurelion_ros2_bridge
 RUN mkdir -p /root/record_log && \
-    source /opt/ros/humble/local_setup.bash && \
+    source /opt/ros/kilted/local_setup.bash && \
     source /root/ros_ws_aux/install/local_setup.bash && \
-    rosdep install -i --from-path /root/dspace_bridge_ws/src --rosdistro humble -y && \
+    rosdep install -i --from-path /root/dspace_bridge_ws/src --rosdistro kilted -y && \
     colcon build --symlink-install --cmake-clean-first --base-paths /root/dspace_bridge_ws/ --build-base /root/dspace_bridge_ws/build --install-base /root/dspace_bridge_ws/install --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo && \
     echo 'source /root/dspace_bridge_ws/install/local_setup.bash' >> /root/.bashrc
 
@@ -81,6 +81,7 @@ FROM dspace_bridge_dev AS dspace_foxglove_bridge
 ENV BRIDGE_TYPE="FOXGLOVE"
 # Install Foxglove bridge 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ros-humble-foxglove-bridge
+    apt-get install -y --no-install-recommends ros-kilted-foxglove-bridge
+
 
 ENTRYPOINT ["sh", "-c", "/root/runtime_scripts/entrypoint.sh"]

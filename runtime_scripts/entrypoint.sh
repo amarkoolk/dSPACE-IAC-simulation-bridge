@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "[INFO] Sourcing ROS environments..."
-source /opt/ros/humble/local_setup.sh
+source /opt/ros/kilted/local_setup.sh
 source /root/ros_ws_aux/install/local_setup.sh
 source /root/dspace_bridge_ws/install/local_setup.sh
 
